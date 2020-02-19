@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>QR code check</title>
+    <link rel="stylesheet" href="main.css"/>
+    <link rel="stylesheet" 
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+
+    <script src="service.js" type="application/javascript"></script>
+  </head>
+  <body>
+
+    <div class="banner lead">
+      Miles more QR upload
+    </div>
+
+    <div class="container">
+      <div class="left-column">
+        <h2>How to use the service?</h2>
+        <p>
+          Just upload the image in the box below and wait for the response.
+        </p>
+        <p>
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Please upload QR image</label>
+            <input type="file" class="form-control" id="file" 
+                   placeholder="Insert QR code here">
+            <small id="emailHelp" class="form-text text-muted">Image will be visible to all browsers online</small>
+          </div>
+          <button type="submit" id="submit" onclick="doSubmit(); return false;"
+                  class="btn btn-primary">Submit</button>
+        </form>
+        </p>
+      </div>
+      <div class="right-column">
+        <div class="right-section">
+          <h3>Update section</h3>
+          <p>
+            This section updates using HTTP/SSE.
+            Each time a successful recognition 
+            has been made it will be sent to all clients.
+          </p>
+        </div>
+        <div class="right-section" id="container">
+          <h3>Last results</h3>
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+</html>
