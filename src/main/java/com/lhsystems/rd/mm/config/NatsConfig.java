@@ -17,18 +17,16 @@ public class NatsConfig {
     @Produces
     @Named("notificationQueue")
     public Processor<String, String> notficiationQueue() {
-        MulticastProcessor proc= MulticastProcessor.create();
-        
+        MulticastProcessor proc = MulticastProcessor.create();
+
         proc.subscribe();
         proc.start();
-        
+
         return proc;
     }
-    
+
     @Inject
     @ConfigProperty(name = "nats.servers", defaultValue = "localhost:4442")
     private String servers;
 
-    
-    
 }

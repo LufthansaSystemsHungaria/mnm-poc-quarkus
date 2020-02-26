@@ -5,6 +5,7 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
@@ -14,11 +15,11 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 import io.vertx.core.json.Json;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
@@ -67,24 +68,25 @@ public class QRResource {
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(qr));
             LuminanceSource source = new BufferedImageLuminanceSource(image);
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-            QRCodeMultiReader reader = new QRCodeMultiReader();
+
+            MultiFormatReader reader = new MultiFormatReader();
+
+            BufferedImage det = MatrixToImageWriter.toBufferedImage(bitmap.getBlackMatrix());
+            ImageIO.write(det, "png", new File("/tmp/bits.png"));
+
             Map<DecodeHintType, Object> hints = new HashMap<>();
             hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
-            //hints.put(DecodeHintType.POSSIBLE_FORMATS, 
-            //         Collections.singletonList(BarcodeFormat.AZTEC));
-            hints.put(DecodeHintType.TRY_HARDER,
-                    true);
+            hints.put(DecodeHintType.PURE_BARCODE, false);
+            hints.put(DecodeHintType.TRY_HARDER, true);
 
-            Result[] results = reader.decodeMultiple(bitmap, hints);
+            Result result = reader.decode(bitmap, hints);
 
-            for (Result result : results) {
+            notif = QRNotification.builder().
+                    mediaType("image/png").
+                    qrData(reencodeAztec(result.getText())).
+                    info(result.getText()).build();
+            notificationQueue.onNext(Json.mapper.writeValueAsString(notif));
 
-                notif = QRNotification.builder().
-                        mediaType("image/png").
-                        qrData(reencodeAztec(result.getText())).
-                        info(result.getText()).build();
-                notificationQueue.onNext(Json.mapper.writeValueAsString(notif));
-            }
 
             return notif;
 
