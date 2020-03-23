@@ -7,7 +7,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
-import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.aztec.AztecWriter;
@@ -66,6 +65,9 @@ public class QRResource {
 
         try {
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(qr));
+            if (image == null) {
+                throw new IllegalStateException("Cannot read image.");
+            }
             LuminanceSource source = new BufferedImageLuminanceSource(image);
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
@@ -82,22 +84,17 @@ public class QRResource {
             Result result = reader.decode(bitmap, hints);
 
             notif = QRNotification.builder().
+                    format(result.getBarcodeFormat().name()).
                     mediaType("image/png").
                     qrData(reencodeAztec(result.getText())).
                     info(result.getText()).build();
             notificationQueue.onNext(Json.mapper.writeValueAsString(notif));
-
 
             return notif;
 
         } catch (NotFoundException na) {
             notif = QRNotification.builder().
                     info("Not found.").
-                    build();
-        } catch (ReaderException ex) {
-            log.error("Error reading", ex);
-            notif = QRNotification.builder().
-                    info("Error: " + ex.getMessage()).
                     build();
         }
 

@@ -1,29 +1,35 @@
-# rest-json project
+# Quarkus qr code reader project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+
+This application can accept multiple bar and matrix codes, QR and Aztec is being targeted.
+
+**Limitations**:
+The library used for reading the codes can only handle aligned inputs. 
+Additionally due to a graalvm limitation, 
+as of version 19, the ImageIO classes cannot be used in native mode, 
+therefore native compilation is a possibility but will yield with an unusable application.
 
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
 ```
-./mvnw quarkus:dev
+mvn quarkus:dev
 ```
 
 ## Packaging and running the application
 
-The application is packageable using `./mvnw package`.
+The application is packageable using `mvn package`.
 It produces the executable `rest-json-1.0-SNAPSHOT-runner.jar` file in `/target` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/lib` directory.
 
 The application is now runnable using `java -jar target/rest-json-1.0-SNAPSHOT-runner.jar`.
 
 ## Creating a native executable
 
-You can create a native executable using: `./mvnw package -Pnative`.
+You can create a native executable using: `mvn package -Pnative`.
 
-Or you can use Docker to build the native executable using: `./mvnw package -Pnative -Dquarkus.native.container-build=true`.
+Or you can use Docker to build the native executable using: `mvn package -Pnative -Dquarkus.native.container-build=true`.
 
 You can then execute your binary: `./target/rest-json-1.0-SNAPSHOT-runner`
 
