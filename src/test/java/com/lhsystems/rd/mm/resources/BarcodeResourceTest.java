@@ -14,7 +14,7 @@ import static io.quarkus.test.common.http.TestHTTPResourceManager.getUri;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 @QuarkusTest
-public class QRResourceTest {
+public class BarcodeResourceTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"qr","aztec"})
@@ -24,7 +24,7 @@ public class QRResourceTest {
         output.addFileField("file", "filename.png", IOUtils.toByteArray(new FileInputStream(
                 "src/test/resources/" + input + ".png")));
 
-        assertJsonEquals(post(getUri() + "/api/mm/qr", output).asText(), 
+        assertJsonEquals(post(getUri() + "/api/mm/barcode", output).asText(),
                 FileUtils.readFileToString(new File("src/test/resources/" + input + ".json"), "utf-8"));
     }
 }
