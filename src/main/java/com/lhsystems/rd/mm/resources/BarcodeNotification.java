@@ -9,9 +9,9 @@ import lombok.Value;
 
 @Value
 @Builder
-public class QRNotification {
+public class BarcodeNotification {
     String format;
-    String qrData;
+    String barcodeData;
     String mediaType;
     String info;
 }

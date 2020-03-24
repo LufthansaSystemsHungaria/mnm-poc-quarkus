@@ -1,39 +1,13 @@
 package com.lhsystems.rd.mm.resources;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
-import com.google.zxing.Result;
-import com.google.zxing.WriterException;
+import com.google.zxing.*;
 import com.google.zxing.aztec.AztecWriter;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import io.vertx.core.json.Json;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import javax.imageio.ImageIO;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.reactivestreams.Processor;
@@ -41,10 +15,22 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("/api/mm/qr")
-public class QRResource {
+import javax.imageio.ImageIO;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Base64;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
-    private static Logger log = LoggerFactory.getLogger(QRResource.class);
+@Path("/api/mm/barcode")
+public class BarcodeResource {
+
+    private static Logger log = LoggerFactory.getLogger(BarcodeResource.class);
 
     @Inject
     @Named("notificationQueue")
@@ -53,18 +39,18 @@ public class QRResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public QRNotification hello(MultipartFormDataInput files)
+    public BarcodeNotification hello(MultipartFormDataInput files)
             throws Exception {
         log.info("request arrived");
 
-        QRNotification notif = null;
+        BarcodeNotification notif = null;
         InputStream file = files.getFormDataPart("file", InputStream.class, null);
 
-        byte[] qr = IOUtils.toByteArray(file);
-        log.info("image size=" + qr.length);
+        byte[] barcode = IOUtils.toByteArray(file);
+        log.info("image size=" + barcode.length);
 
         try {
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(qr));
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(barcode));
             if (image == null) {
                 throw new IllegalStateException("Cannot read image.");
             }
@@ -83,18 +69,18 @@ public class QRResource {
 
             Result result = reader.decode(bitmap, hints);
 
-            notif = QRNotification.builder().
+            notif = BarcodeNotification.builder().
                     format(result.getBarcodeFormat().name()).
                     mediaType("image/png").
-                    qrData(reencodeAztec(result.getText())).
+                    barcodeData(reencodeAztec(result.getText())).
                     info(result.getText()).build();
             notificationQueue.onNext(Json.mapper.writeValueAsString(notif));
 
             return notif;
 
         } catch (NotFoundException na) {
-            notif = QRNotification.builder().
-                    info("Not found.").
+            notif = BarcodeNotification.builder().
+                    info("No data found").
                     build();
         }
 
