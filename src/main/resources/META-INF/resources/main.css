@@ -88,3 +88,16 @@ li {
   list-style-type: none;
   padding-left: 0;
 }
+
+@keyframes flash {
+  from {
+    background: lightyellow;
+  }
+  to {
+    background: transparent;
+  }
+}
+
+p.item-flash span {
+  animation: flash 5s;
+}

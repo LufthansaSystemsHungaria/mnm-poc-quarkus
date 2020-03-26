@@ -80,7 +80,7 @@ public class BarcodeResource {
 
         } catch (NotFoundException na) {
             notif = BarcodeNotification.builder().
-                    info("No data found").
+                    info("Data not found").
                     build();
         }
 

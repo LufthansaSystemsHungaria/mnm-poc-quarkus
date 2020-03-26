@@ -17,7 +17,7 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 public class BarcodeResourceTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"qr","aztec"})
+    @ValueSource(strings = {"qr", "aztec"})
     public void test(String input) throws Exception {
         MultipartFormBody output = new MultipartFormBody();
         output.addFormField("source", "test");

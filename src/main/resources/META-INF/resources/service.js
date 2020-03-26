@@ -3,11 +3,12 @@ var eventSource = new EventSource("/api/mm/barcode/streaming");
 eventSource.onmessage = function (event) {
   var container = document.getElementById("container");
   var paragraph = document.createElement("p");
+  paragraph.classList.add('item-flash')
 
   var data = JSON.parse(event.data);
 
   if (data && data.barcodeData) {
-    paragraph.innerHTML = "<hr><b>" + data.info + "</b><br>"
+    paragraph.innerHTML = "<hr><span><b>" + data.info + "</b><br></span>"
             + "<img src='data:" + data.mediaType+ ";base64," + data.barcodeData + "'/>";
     container.insertBefore(paragraph, container.firstChild);
     Toastify({
@@ -15,7 +16,7 @@ eventSource.onmessage = function (event) {
             backgroundColor: "green"
         }).showToast();
   } else {
-    paragraph.innerHTML = "<hr><b>" + data.info + "</b><br>";
+    paragraph.innerHTML = "<hr><span><b>" + data.info + "</b><br></span>";
     container.insertBefore(paragraph, container.firstChild);
     Toastify({
         text: "Barcode not found",
