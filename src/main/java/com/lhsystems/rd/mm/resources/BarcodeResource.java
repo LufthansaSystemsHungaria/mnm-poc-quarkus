@@ -59,9 +59,6 @@ public class BarcodeResource {
 
             MultiFormatReader reader = new MultiFormatReader();
 
-            BufferedImage det = MatrixToImageWriter.toBufferedImage(bitmap.getBlackMatrix());
-            ImageIO.write(det, "png", new File("/tmp/bits.png"));
-
             Map<DecodeHintType, Object> hints = new HashMap<>();
             hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
             hints.put(DecodeHintType.PURE_BARCODE, false);

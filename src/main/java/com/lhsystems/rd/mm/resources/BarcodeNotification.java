@@ -1,7 +1,3 @@
-/*
- *  Copyright Lufthansa Systems.
- */
-
 package com.lhsystems.rd.mm.resources;
 
 import lombok.Builder;

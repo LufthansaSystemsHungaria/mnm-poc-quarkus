@@ -1,6 +1,3 @@
-/*
- *  Copyright Lufthansa Systems.
- */
 package com.lhsystems.rd.mm.config;
 
 import io.reactivex.processors.MulticastProcessor;
