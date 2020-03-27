@@ -24,7 +24,8 @@ public class BarcodeResourceTest {
         output.addFileField("file", "filename.png", IOUtils.toByteArray(new FileInputStream(
                 "src/test/resources/" + input + ".png")));
 
-        assertJsonEquals(post(getUri() + "/api/mm/barcode", output).asText(),
-                FileUtils.readFileToString(new File("src/test/resources/" + input + ".json"), "utf-8"));
+        assertJsonEquals(
+                FileUtils.readFileToString(new File("src/test/resources/" + input + ".json"), "utf-8"),
+                post(getUri() + "/api/mm/barcode", output).asText());
     }
 }
